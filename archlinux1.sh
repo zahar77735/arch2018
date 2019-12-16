@@ -39,7 +39,7 @@ mkswap /dev/$swapsection -L swap
 
 echo '2.4.3 Монтирование дисков'
 mount /dev/$rootsection /mnt
-swapon /dev/sda3
+swapon /dev/$swapsection
 
 
 echo '3.1 Выбор зеркал для загрузки. Ставим зеркало от Яндекс'
