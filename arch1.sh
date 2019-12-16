@@ -18,59 +18,35 @@ echo 'Ссылка на чек лист есть в группе vk.com/arch4u'
 echo '2.3 Синхронизация системных часов'
 timedatectl set-ntp true
 
+pacman -S btrfs-progs --noconfirm
+
 echo '2.4 создание разделов'
-(
-  echo o;
-
-  echo n;
-  echo;
-  echo;
-  echo;
-  echo +100M;
-
-  echo n;
-  echo;
-  echo;
-  echo;
-  echo +20G;
-
-  echo n;
-  echo;
-  echo;
-  echo;
-  echo +1024M;
-
-  echo n;
-  echo p;
-  echo;
-  echo;
-  echo a;
-  echo 1;
-
-  echo w;
-) | fdisk /dev/sda
 
 echo 'Ваша разметка диска'
 fdisk -l
 
+read -p "Выбор диска: " devsection
+fdisk /dev/$devsection
+
+
+read -p "Выбор root раздела: " rootsection
+read -p "Выбор swap раздела: " swapsection
+
 echo '2.4.2 Форматирование дисков'
-mkfs.ext2  /dev/sda1 -L boot
-mkfs.ext4  /dev/sda2 -L root
-mkswap /dev/sda3 -L swap
-mkfs.ext4  /dev/sda4 -L home
+mkfs.btrfs  /dev/$rootsection -L root
+mkswap /dev/$swapsection -L swap
+
 
 echo '2.4.3 Монтирование дисков'
-mount /dev/sda2 /mnt
-mkdir /mnt/{boot,home}
-mount /dev/sda1 /mnt/boot
+mount /dev/$rootsection /mnt
 swapon /dev/sda3
-mount /dev/sda4 /mnt/home
+
 
 echo '3.1 Выбор зеркал для загрузки. Ставим зеркало от Яндекс'
 echo "Server = http://mirror.yandex.ru/archlinux/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
 
 echo '3.2 Установка основных пакетов'
-pacstrap /mnt base base-devel linux linux-firmware nano dhcpcd netctl
+pacstrap /mnt base base-devel linux linux-firmware nano dhcpcd netctl btrfs-progs
 
 echo '3.3 Настройка системы'
 genfstab -pU /mnt >> /mnt/etc/fstab
