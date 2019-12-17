@@ -18,7 +18,7 @@ echo 'Ссылка на чек лист есть в группе vk.com/arch4u'
 echo '2.3 Синхронизация системных часов'
 timedatectl set-ntp true
 
-pacman -S btrfs-progs arch-install-scripts --noconfirm
+pacman -S btrfs-progs zsh arch-install-scripts --noconfirm
 
 echo '2.4 создание разделов'
 
